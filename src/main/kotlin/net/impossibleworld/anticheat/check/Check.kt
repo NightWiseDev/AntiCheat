@@ -6,31 +6,51 @@ import org.bukkit.Bukkit
 
 abstract class Check(val data: PlayerData, val name: String) {
 
-    // У каждой проверке (чека) есть свой уровень нарушений. (VL)
     var vl: Double = 0.0
-
-    // Буфферино копит в себе накопления о подозрениях
     protected var buffer: Double = 0.0
 
-    // Этот метод должен быть реализован в каждой проверке по своему
     abstract fun handle(event: PacketReceiveEvent)
 
-    protected fun fail(info: String, maxVl: Double) {
+    protected fun fail(info: String) {
         vl++
+
+        val alertMessage = "§c[AC] Игрок ${data.user.name} провалил $name ($info) VL: ${String.format("%.1f", vl)}"
+        val banMessage = "§4[AC] Игрок ${data.user.name} был забанен за читы ($name)."
+
         for (player in Bukkit.getOnlinePlayers()) {
             if (player.hasPermission("ac.admin")) {
-                player.sendMessage("Игрок $data.${player.name} провалил ($info) VL: $vl")
-            }
-            if (vl >= maxVl) {
-                for (player in Bukkit.getOnlinePlayers()) {
-                    if (player.hasPermission("ac.admin")) {
-                        player.sendMessage("Игрок $data.${player.name} провалил ($info) VL: максимальный бань его нахуй")
-                    }
+                player.sendMessage(alertMessage)
+
+                if (vl >= 15) {
+                    player.sendMessage("§c--> БАН! (VL > 15)")
                 }
             }
         }
+        if (vl >= 15) {
+            // Выполняем команду бана в основном потоке Bukkit (так безопаснее)
+            Bukkit.getScheduler().runTask(Bukkit.getPluginManager().getPlugin("AntiCheat")!!) { ->
+                // Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban ${data.user.name} Cheating ($name)")
+                println(banMessage) // Пока просто пишем в консоль
+            }
+            // Сбрасываем VL, чтобы не спамить банами
+            vl = 0.0
+        }
     }
+
+    protected fun increaseBuffer(increase: Double, decrease: Double, threshold: Double): Boolean {
+        buffer += increase
+        if (buffer >= threshold) {
+            buffer = threshold * 0.75
+            return true
+        }
+        return false
+    }
+
+    protected fun decreaseBuffer(amount: Double) {
+        buffer = (buffer - amount).coerceAtLeast(0.0)
+    }
+
     fun decay() {
-        if(vl > 0) vl -= 0.5
+        if (vl > 0) vl -= 0.05 // Уменьшаем VL медленно со временем
     }
 }

@@ -10,6 +10,9 @@ class PlayerData (val user: User){
 
     // Очки нарушений (Violation Level)
     private var impossiblePitchVL : Int = 0
+
+    public var teleportTicks : Int = 0
+
     var lastYaw : Float? = null
     var lastPitch : Float? = null
 
@@ -18,5 +21,9 @@ class PlayerData (val user: User){
     }
     public fun addImpossiblePitch() {
         this.impossiblePitchVL++
+    }
+    fun tick() {
+        if(teleportTicks > 0) teleportTicks--
+        checks.forEach { it.decay() }
     }
 }
