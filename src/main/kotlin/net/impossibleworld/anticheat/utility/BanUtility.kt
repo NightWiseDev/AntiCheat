@@ -42,10 +42,10 @@ object BanUtility {
                     player.world.playSound(player.location, Sound.ENTITY_GENERIC_EXPLODE, 1f, 1f)
                     player.world.playSound(player.location, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1f, 1f)
 
-                    val command = "tempban ${player.name} 30d Cheating ($reason) -s" // -s чтобы скрыть дефолтное сообщение, если хочешь
+                    val command = "tempban ${player.name} 30d Запрещенное ПО ($reason) -s" // -s чтобы скрыть дефолтное сообщение, если хочешь
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command)
 
-                    Bukkit.broadcastMessage("§8[§c§lAC§8] §fИгрок §c${player.name} §fбыл уничтожен за читы!")
+                    Bukkit.broadcastMessage("§8[§c§lAC§8] §fИгрок §c${player.name} §fбыл уничтожен за читерские программы!")
                 }
 
                 ticks++
