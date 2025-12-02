@@ -11,13 +11,14 @@ object PlayerDataManager {
 
 
     fun getData(user : User) : PlayerData? {
-        val uuid = user.uuid
+        val uuid = user.uuid ?: return null
 
         return userMap.computeIfAbsent(uuid) {
             PlayerData(user)
         }
     }
     fun removeData(user : User) {
+        val uuid = user.uuid ?: return
         userMap.remove(user.uuid)
     }
     fun removeData(uuid : UUID) {

@@ -2,6 +2,8 @@ package net.impossibleworld.anticheat.check
 
 import com.github.retrooper.packetevents.event.PacketReceiveEvent
 import net.impossibleworld.anticheat.data.PlayerData
+import net.impossibleworld.anticheat.utility.BanUtility
+import net.impossibleworld.utility.IWUser.UserManager
 import org.bukkit.Bukkit
 
 abstract class Check(val data: PlayerData, val name: String) {
@@ -12,27 +14,32 @@ abstract class Check(val data: PlayerData, val name: String) {
     abstract fun handle(event: PacketReceiveEvent)
 
     protected fun fail(info: String) {
+        if(data.isBanned) return
+
         vl++
 
-        val alertMessage = "§c[AC] Игрок ${data.user.name} провалил $name ($info) VL: ${String.format("%.1f", vl)}"
-        val banMessage = "§4[AC] Игрок ${data.user.name} был забанен за читы ($name)."
+        val alertMessage = "&#444444[&#ff3333I&#dd2222A&#aa0000C&#444444] &f${data.user.name} &7failed &#ff5555$name &8($info) &7VL: &#ffbb00${String.format("%.1f", vl)}"
 
         for (player in Bukkit.getOnlinePlayers()) {
             if (player.hasPermission("ac.admin")) {
-                player.sendMessage(alertMessage)
-
-                if (vl >= 15) {
-                    player.sendMessage("§c--> БАН! (VL > 15)")
-                }
+                UserManager.getUser(player).sendMessage(alertMessage)
             }
         }
         if (vl >= 15) {
+            data.isBanned = true
             // Выполняем команду бана в основном потоке Bukkit (так безопаснее)
-            Bukkit.getScheduler().runTask(Bukkit.getPluginManager().getPlugin("AntiCheat")!!) { ->
-                // Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban ${data.user.name} Cheating ($name)")
-                println(banMessage) // Пока просто пишем в консоль
+            val plugin = Bukkit.getPluginManager().getPlugin("AntiCheat")
+            if(plugin != null) {
+                Bukkit.getScheduler().runTask(plugin) { ->
+                    val player = Bukkit.getPlayer(data.user.uuid)
+                    if(player != null) {
+                        BanUtility.runBanAnimation(plugin, player,name)
+                    }
+                }
+            } else {
+                println("ОШИБКА: Не найдено имя плагина для запуска анимации бана!")
             }
-            // Сбрасываем VL, чтобы не спамить банами
+
             vl = 0.0
         }
     }

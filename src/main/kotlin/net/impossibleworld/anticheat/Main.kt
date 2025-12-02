@@ -6,7 +6,9 @@ import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import net.impossibleworld.anticheat.listener.PacketHandler
 import org.bukkit.plugin.java.JavaPlugin
 
-class Main : JavaPlugin() {
+public class Main : JavaPlugin() {
+
+    public val debug = true
 
     companion object {
         lateinit var instance: Main

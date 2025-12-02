@@ -16,19 +16,18 @@ class PacketHandler : PacketListener {
 
         // Если сервер телепортирует игрока
         if (event.packetType == PacketType.Play.Server.PLAYER_POSITION_AND_LOOK) {
-            val data = PlayerDataManager.getData(user)!!
-            data.teleportTicks = 10
+            val data = PlayerDataManager.getData(user)
+            data?.teleportTicks = 10
         }
     }
 
     override fun onPacketReceive(event: PacketReceiveEvent) {
         val user = event.user ?: return
-        // Если данных нет, нет смысла продолжать
-        val data = PlayerDataManager.getData(user)!!
+        val data = PlayerDataManager.getData(user) ?: return
 
-        // FIX: ВАЖНО! Вызываем тик таймеров при движении
         if (isMovement(event.packetType)) {
             data.tick()
+            data.lastFlyingTime= System.currentTimeMillis()
         }
 
         data.checks.forEach { check ->
