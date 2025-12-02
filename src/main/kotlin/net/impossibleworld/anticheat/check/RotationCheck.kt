@@ -23,7 +23,6 @@ class RotationCheck(data: PlayerData) : Check(data, "Rotation (Consistency)") {
         ) {
             return
         }
-
         if (data.teleportTicks > 0) {
             updateLastRotation(event)
             return
@@ -52,12 +51,36 @@ class RotationCheck(data: PlayerData) : Check(data, "Rotation (Consistency)") {
             val deltaYaw = getDeltaYaw(currentYaw, data.lastYaw!!)
             val deltaPitch = abs(currentPitch - data.lastPitch!!)
 
+        // --- ДЕТЕКТ ЗУМА (Cinematic Analysis) ---
+
+            // Если движение очень маленькое (< 0.5 градуса), но не нулевое
+            // Обычная мышь дергается резче. Зум сглаживает углы.
+            val isSlow = deltaYaw > 0.0 && deltaYaw < 0.5 && deltaPitch > 0.0 && deltaPitch < 0.5
+
+            if (isSlow) {
+                data.cinematicBuffer++
+                // Если уже 3 тика подряд движение плавное -> считаем, что это Зум
+                if (data.cinematicBuffer > 3) {
+                    data.isCinematic = true
+                }
+            } else {
+                // Если движение стало резким или прекратилось -> Зум выключен
+                // Сбрасываем не сразу, а постепенно (чтобы не флагало на выходе из зума)
+                if (data.cinematicBuffer > 0) data.cinematicBuffer -= 2
+
+                if (data.cinematicBuffer <= 0) {
+                    data.isCinematic = false
+                    data.cinematicBuffer = 0
+                }
+            }
             // 2. GCD / Sensitivity Check
             // Эта проверка ловит "AimAssist" и "Smooth KillAura".
             // Она проверяет, соответствуют ли движения мыши реальному оборудованию.
             // Работает только на малых углах (когда киллаура "ведет" цель).
-            if (deltaPitch > 0 && deltaPitch < 30 && deltaYaw > 0 && deltaYaw < 30) {
-                checkGCD(deltaPitch.toDouble(), lastDeltaPitch.toDouble())
+            if(!data.isCinematic) {
+                if (deltaPitch > 0 && deltaPitch < 30 && deltaYaw > 0 && deltaYaw < 30) {
+                    checkGCD(deltaPitch.toDouble(), lastDeltaPitch.toDouble())
+                }
             }
 
             // Обязательно обновляем прошлые значения
@@ -77,7 +100,7 @@ class RotationCheck(data: PlayerData) : Check(data, "Rotation (Consistency)") {
             gcdBuffer += 0.5
             // Порог 12.0 достаточно высокий, чтобы избежать случайных срабатываний
             if (gcdBuffer > 12.0) {
-                fail("KillAura/AimAssist detected (Bad GCD: ${String.format("%.4f", pitchGCD)})")
+                fail("KillAura/AimAssist обнаружен (Плохое движение мыши GCD: ${String.format("%.4f", pitchGCD)})")
                 gcdBuffer = 6.0
             }
         } else {

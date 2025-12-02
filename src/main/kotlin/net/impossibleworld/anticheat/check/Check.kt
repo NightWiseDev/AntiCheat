@@ -20,9 +20,11 @@ abstract class Check(val data: PlayerData, val name: String) {
 
         val alertMessage = "&#444444[&#ff3333I&#dd2222A&#aa0000C&#444444] &f${data.user.name} &7failed &#ff5555$name &8($info) &7VL: &#ffbb00${String.format("%.1f", vl)}"
 
-        for (player in Bukkit.getOnlinePlayers()) {
-            if (player.hasPermission("ac.admin")) {
-                UserManager.getUser(player).sendMessage(alertMessage)
+        if(vl >= 5) {
+            for (player in Bukkit.getOnlinePlayers()) {
+                if (player.hasPermission("ac.admin")) {
+                    UserManager.getUser(player).sendMessage(alertMessage)
+                }
             }
         }
         if (vl >= 15) {

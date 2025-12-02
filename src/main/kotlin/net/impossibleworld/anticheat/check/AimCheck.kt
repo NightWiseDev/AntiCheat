@@ -42,7 +42,7 @@ class AimCheck(data: PlayerData) : Check(data, "AimCheck (Raytrace)") {
                 // Игрок смотрит мимо даже расширенного хитбокса
                 // 8.0 - довольно строгий порог буфера, но для Raytrace это нормально
                 if (increaseBuffer(1.0, 0.1, 8.0)) {
-                    fail("Hit missed hitbox (Raytrace fail)")
+                    fail("Попадание в пропущенный хитбокс (ошибка трассировки лучей)")
                 }
             } else {
                 // Игрок попал. Проверяем Reach.
@@ -56,7 +56,7 @@ class AimCheck(data: PlayerData) : Check(data, "AimCheck (Raytrace)") {
 
                 if (exactDistance > maxReach) {
                     if (increaseBuffer(1.0, 0.2, 10.0)) {
-                        fail("Reach > $maxReach (Actual: ${String.format("%.2f", exactDistance)})")
+                        fail("Reach > $maxReach (Фактически: ${String.format("%.2f", exactDistance)})")
                     }
                 } else {
                     decreaseBuffer(0.1)
