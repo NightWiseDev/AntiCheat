@@ -10,6 +10,7 @@ import net.impossibleworld.anticheat.data.PlayerData
 class KillAuraCheck(data: PlayerData) : Check(data,"killAura") {
 
     private val cfgLang : LanguageConfig = Main.instance.getWorkConfig()
+    private val mainCfg = Main.instance.mainCfg
 
     override fun handle(event: PacketReceiveEvent) {
         if(event.packetType == PacketType.Play.Client.INTERACT_ENTITY){
@@ -28,7 +29,7 @@ class KillAuraCheck(data: PlayerData) : Check(data,"killAura") {
 
                 // AutoBlock / ImpossibleActions
                 if(data.isUsingItem) {
-                    if(increaseBuffer(1.0, 0.1, 5.0)) {
+                    if (increaseBuffer(1.0, 0.1, 5.0)) {
                         fail(cfgLang.getMessage("fails.autoblock"))
                         event.isCancelled = true
                     }
@@ -37,7 +38,7 @@ class KillAuraCheck(data: PlayerData) : Check(data,"killAura") {
                 val delay = System.currentTimeMillis() - data.lastFlyingTime
                 if(delay < 5) {
                     increaseBuffer(1.0,0.1,10.0)
-                    fail(cfgLang.getMessage("fails.hit_movement"))
+                    fail(cfgLang.getMessage("fails.hit_movement").replace("%delay%", delay.toString()))
                 } else {
                     decreaseBuffer(0.1)
                 }

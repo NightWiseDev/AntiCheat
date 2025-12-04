@@ -16,7 +16,8 @@ fails:
   hit_movement: 'Bad Packet Order &7(Delay: &f%delay%ms&7)'
   impossible_pitch: 'Impossible Pitch &7(%current_pitch%)'
   killAura_aimAssist: 'Aim Consistency &7(GCD: &f%pitch_gcd%&7)'
+  auto_clicker: 'AutoClicker (Consistency)\nAvg: %avg% ms\nDev: %stdDev%'
 
 messages:
   alert: '&#444444[&#ff3333I&#dd2222A&#aa0000C&#444444] &f%username% &7failed &#ff5555%fail_name% &8(%info%) &7VL: &#ffbb00%current_vl%'
-  broadcast_ban_message: '&#444444[&#ff3333A&#aa0000C&#444444] &fPlayer &#ff5555%username% &fwas destroyed for cheating!'
+  broadcast_ban_message: '&#444444[&#ff3333A&#aa0000C&#444444] &fPlayer &#ff5555%player% &fwas destroyed for cheating!'

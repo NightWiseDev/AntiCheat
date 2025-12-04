@@ -1,6 +1,7 @@
 settings:
   alert_permission: 'ac.admin' # what permission it is necessary for alerts message
   maxVL: 15 # from how VL the player will be banned
-  protectionAlertsVL: 5 #  How long will VL tell you that a user is doing suspicious activity. It is recommended to put from 5 to 7, as there are always false positives from 1 to 2 VL
+  protectionAlertsVL: 5 #  How long will VL tell you that a user is doing suspicious activity.
+                        #It is recommended to put from 5 to 7, as there are always false positives from 1 to 2 VL
   ban_command: 'tempban %player% 30d Cheating (%reason%) -s'
   broadcast_ban: true # Should I write to all players that the player is banned for cheats?

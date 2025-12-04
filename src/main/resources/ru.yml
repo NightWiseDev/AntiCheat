@@ -16,6 +16,7 @@ fails:
   hit_movement: 'Порядок пакетов &7(Задержка: &f%delay%мс&7)'
   impossible_pitch: 'Невозможный угол &7(%current_pitch%)'
   killAura_aimAssist: 'Странная наводка &7(GCD: &f%pitch_gcd%&7)'
+  auto_clicker: 'AutoClicker (Consistency)\nAvg: %avg% ms\nDev: %stdDev%'
 
 messages:
   alert: '&#444444[&#ff3333I&#dd2222A&#aa0000C&#444444] &f%username% &7провалил &#ff5555%fail_name% &8(%info%) &7VL: &#ffbb00%current_vl%'

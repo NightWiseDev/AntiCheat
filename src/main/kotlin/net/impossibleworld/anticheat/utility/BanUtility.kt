@@ -50,7 +50,7 @@ object BanUtility {
                     if (Main.instance.mainCfg.getConfig().getBoolean("settings.broadcast_ban")) {
                         Bukkit.broadcastMessage(
                             HexUtil.translate(
-                                Main.instance.getWorkConfig().getMessage("messages.broadcast_ban_message")
+                                Main.instance.getWorkConfig().getMessage("messages.broadcast_ban_message").replace("%username%", player.name),
                             )
                         )
                     }
