@@ -1,6 +1,7 @@
 package net.impossibleworld.anticheat.data
 
 import com.github.retrooper.packetevents.protocol.player.User
+import net.impossibleworld.anticheat.check.ActionProcessor
 import net.impossibleworld.anticheat.check.AimCheck
 import net.impossibleworld.anticheat.check.Check
 import net.impossibleworld.anticheat.check.HitboxCheck
@@ -13,7 +14,8 @@ class PlayerData (val user: User){
         RotationCheck(this),
         KillAuraCheck(this),
         AimCheck(this),
-        HitboxCheck(this)
+        HitboxCheck(this),
+        ActionProcessor(this)
     )
 
     // Очки нарушений (Violation Level)
@@ -22,6 +24,13 @@ class PlayerData (val user: User){
     public var teleportTicks : Int = 0
 
     public var lastFlyingTime : Long = 0L
+
+    public var lastSwingTime : Long = 0L // взмах
+
+    // Флаг, был ли совершен взмах в этом тике
+    public var hasSwung : Boolean = false
+
+    public var isUsingItem : Boolean = false
 
     public var isBanned = false
 

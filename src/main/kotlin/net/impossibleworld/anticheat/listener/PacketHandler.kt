@@ -7,6 +7,7 @@ import com.github.retrooper.packetevents.event.UserDisconnectEvent
 import com.github.retrooper.packetevents.event.UserLoginEvent
 import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientUseItem
 import net.impossibleworld.anticheat.manager.PlayerDataManager
 
 class PacketHandler : PacketListener {
@@ -28,6 +29,11 @@ class PacketHandler : PacketListener {
         if (isMovement(event.packetType)) {
             data.tick()
             data.lastFlyingTime= System.currentTimeMillis()
+            data.hasSwung = false
+        }
+        if(event.packetType == PacketType.Play.Client.ANIMATION) {
+            data.lastSwingTime= System.currentTimeMillis()
+            data.hasSwung = true
         }
 
         data.checks.forEach { check ->

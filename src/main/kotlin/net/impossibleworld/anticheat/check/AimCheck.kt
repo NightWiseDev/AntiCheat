@@ -3,11 +3,15 @@ package net.impossibleworld.anticheat.check
 import com.github.retrooper.packetevents.event.PacketReceiveEvent
 import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity
+import net.impossibleworld.anticheat.Main
+import net.impossibleworld.anticheat.configuration.LanguageConfig
 import net.impossibleworld.anticheat.data.PlayerData
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 
 class AimCheck(data: PlayerData) : Check(data, "AimCheck (Raytrace)") {
+
+    private val cfgLang : LanguageConfig = Main.instance.getWorkConfig()
 
 
     override fun handle(event: PacketReceiveEvent) {
@@ -42,7 +46,7 @@ class AimCheck(data: PlayerData) : Check(data, "AimCheck (Raytrace)") {
                 // Игрок смотрит мимо даже расширенного хитбокса
                 // 8.0 - довольно строгий порог буфера, но для Raytrace это нормально
                 if (increaseBuffer(1.0, 0.1, 8.0)) {
-                    fail("Попадание в пропущенный хитбокс (ошибка трассировки лучей)")
+                    fail(cfgLang.getMessage("fails.rayTracing"))
                 }
             } else {
                 // Игрок попал. Проверяем Reach.
@@ -56,7 +60,10 @@ class AimCheck(data: PlayerData) : Check(data, "AimCheck (Raytrace)") {
 
                 if (exactDistance > maxReach) {
                     if (increaseBuffer(1.0, 0.2, 10.0)) {
-                        fail("Reach > $maxReach (Фактически: ${String.format("%.2f", exactDistance)})")
+                        var message = cfgLang.getMessage("fails.reach")
+                        message = message.replace("%maxReach%", maxReach.toString())
+                        message = message.replace("%exactDistance%", String.format("%.2f",exactDistance.toString()))
+                        fail(message)
                     }
                 } else {
                     decreaseBuffer(0.1)

@@ -1,0 +1,22 @@
+# -------------------------------------------------------------------------
+# ImpossibleAntiCheat - English Configuration
+# -------------------------------------------------------------------------
+# Supports Hex Colors: &#RRGGBB
+# Supports Gradients: gradient:#RRGGBB:#RRGGBB text </gradient>
+# -------------------------------------------------------------------------
+
+work: true # Will English be included?
+
+fails:
+  rayTracing: 'Missed Hitbox &7(Raytrace failed)'
+  reach: 'Reach &7(Dist: &f%exactDistance%&7, Limit: &f%maxReach%&7)'
+  hitbox: 'Hitbox Expansion &7(Margin: &f%expansion%&7)'
+  noswing: 'NoSwing &7(Attack without animation)'
+  autoblock: 'AutoBlock &7(Attack while using item)'
+  hit_movement: 'Bad Packet Order &7(Delay: &f%delay%ms&7)'
+  impossible_pitch: 'Impossible Pitch &7(%current_pitch%)'
+  killAura_aimAssist: 'Aim Consistency &7(GCD: &f%pitch_gcd%&7)'
+
+messages:
+  alert: '&#444444[&#ff3333I&#dd2222A&#aa0000C&#444444] &f%username% &7failed &#ff5555%fail_name% &8(%info%) &7VL: &#ffbb00%current_vl%'
+  broadcast_ban_message: '&#444444[&#ff3333A&#aa0000C&#444444] &fPlayer &#ff5555%username% &fwas destroyed for cheating!'

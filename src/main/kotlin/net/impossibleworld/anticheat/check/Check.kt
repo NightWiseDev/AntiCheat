@@ -1,12 +1,17 @@
 package net.impossibleworld.anticheat.check
 
 import com.github.retrooper.packetevents.event.PacketReceiveEvent
+import net.impossibleworld.anticheat.Main
+import net.impossibleworld.anticheat.configuration.LanguageConfig
 import net.impossibleworld.anticheat.data.PlayerData
 import net.impossibleworld.anticheat.utility.BanUtility
-import net.impossibleworld.utility.IWUser.UserManager
+import net.impossibleworld.anticheat.utility.HexUtil
 import org.bukkit.Bukkit
 
 abstract class Check(val data: PlayerData, val name: String) {
+
+    private val cfgLang : LanguageConfig = Main.instance.getWorkConfig()
+    private val mainCfg = Main.instance.mainCfg
 
     var vl: Double = 0.0
     protected var buffer: Double = 0.0
@@ -18,30 +23,29 @@ abstract class Check(val data: PlayerData, val name: String) {
 
         vl++
 
-        val alertMessage = "&#444444[&#ff3333I&#dd2222A&#aa0000C&#444444] &f${data.user.name} &7failed &#ff5555$name &8($info) &7VL: &#ffbb00${String.format("%.1f", vl)}"
-
-        if(vl >= 5) {
+        var alertMessage = cfgLang.getMessage("messages.alert")
+        alertMessage = alertMessage.replace("%username%", data.user.name)
+        alertMessage = alertMessage.replace("%fail_name%",name)
+        alertMessage = alertMessage.replace("%info%",info)
+        alertMessage = alertMessage.replace("%current_vl%",String.format("%.1f", vl))
+        if(vl >= mainCfg.getConfig().getInt("settings.protectionAlertsVL")) {
             for (player in Bukkit.getOnlinePlayers()) {
-                if (player.hasPermission("ac.admin")) {
-                    UserManager.getUser(player).sendMessage(alertMessage)
+                if (player.hasPermission(mainCfg.getConfig().getString("settings.alert_permission")!!)) {
+                    player.sendMessage(HexUtil.translate(alertMessage))
                 }
             }
         }
-        if (vl >= 15) {
+        if (vl >= mainCfg.getConfig().getInt("settings.maxVL")) {
             data.isBanned = true
-            // Выполняем команду бана в основном потоке Bukkit (так безопаснее)
             val plugin = Bukkit.getPluginManager().getPlugin("AntiCheat")
             if(plugin != null) {
                 Bukkit.getScheduler().runTask(plugin) { ->
                     val player = Bukkit.getPlayer(data.user.uuid)
-                    if(player != null) {
-                        BanUtility.runBanAnimation(plugin, player,name)
+                    if (player != null) {
+                        BanUtility.runBanAnimation(plugin, player, name)
                     }
                 }
-            } else {
-                println("ОШИБКА: Не найдено имя плагина для запуска анимации бана!")
             }
-
             vl = 0.0
         }
     }

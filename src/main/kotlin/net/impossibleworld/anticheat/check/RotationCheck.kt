@@ -4,11 +4,15 @@ import com.github.retrooper.packetevents.event.PacketReceiveEvent
 import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerPositionAndRotation
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerRotation
+import net.impossibleworld.anticheat.Main
+import net.impossibleworld.anticheat.configuration.LanguageConfig
 import net.impossibleworld.anticheat.data.PlayerData
 import kotlin.math.abs
 import kotlin.math.floor
 
 class RotationCheck(data: PlayerData) : Check(data, "Rotation (Consistency)") {
+
+    private val langCfg : LanguageConfig = Main.instance.getWorkConfig()
 
     // Переменные для GCD чека
     private var lastDeltaYaw = 0.0f
@@ -43,7 +47,7 @@ class RotationCheck(data: PlayerData) : Check(data, "Rotation (Consistency)") {
 
         // 1. Impossible Pitch (Это оставляем, так как смотреть вниз головой = 100% чит)
         if (abs(currentPitch) > 90f) {
-            fail("Pitch > 90 ($currentPitch)")
+            fail(langCfg.getMessage("fails.impossible_pitch").replace("%current_pitch%",currentPitch.toString()))
             return
         }
 
@@ -100,7 +104,7 @@ class RotationCheck(data: PlayerData) : Check(data, "Rotation (Consistency)") {
             gcdBuffer += 0.5
             // Порог 12.0 достаточно высокий, чтобы избежать случайных срабатываний
             if (gcdBuffer > 12.0) {
-                fail("KillAura/AimAssist обнаружен (Плохое движение мыши GCD: ${String.format("%.4f", pitchGCD)})")
+                fail(langCfg.getMessage("fails.killAura_aimAssist").replace("%pitch_gcd%", String.format("%.4f", pitchGCD)))
                 gcdBuffer = 6.0
             }
         } else {

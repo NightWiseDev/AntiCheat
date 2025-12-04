@@ -1,0 +1,22 @@
+# -------------------------------------------------------------------------
+# ImpossibleAntiCheat - Русская Конфигурация
+# -------------------------------------------------------------------------
+# Поддерживает Hex цвета: &#RRGGBB
+# Поддерживает Градиенты: gradient:#RRGGBB:#RRGGBB текст </gradient>
+# -------------------------------------------------------------------------
+
+work: false # Будет ли включен русский язык?
+
+fails:
+  rayTracing: 'Промах по хитбоксу &7(Ошибка Raytrace)'
+  reach: 'Дистанция &7(Удар: &f%exactDistance%&7, Лимит: &f%maxReach%&7)'
+  hitbox: 'Расширение хитбокса &7(Запас: &f%expansion%&7)'
+  noswing: 'NoSwing &7(Атака без анимации)'
+  autoblock: 'AutoBlock &7(Атака при использовании)'
+  hit_movement: 'Порядок пакетов &7(Задержка: &f%delay%мс&7)'
+  impossible_pitch: 'Невозможный угол &7(%current_pitch%)'
+  killAura_aimAssist: 'Странная наводка &7(GCD: &f%pitch_gcd%&7)'
+
+messages:
+  alert: '&#444444[&#ff3333I&#dd2222A&#aa0000C&#444444] &f%username% &7провалил &#ff5555%fail_name% &8(%info%) &7VL: &#ffbb00%current_vl%'
+  broadcast_ban_message: '&#444444[&#ff3333A&#aa0000C&#444444] &fИгрок &#ff5555%username% &fбыл уничтожен за читерские программы!'

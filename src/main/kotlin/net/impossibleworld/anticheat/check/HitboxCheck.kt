@@ -3,10 +3,16 @@ package net.impossibleworld.anticheat.check
 import com.github.retrooper.packetevents.event.PacketReceiveEvent
 import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity
+import net.impossibleworld.anticheat.Main
+import net.impossibleworld.anticheat.configuration.LanguageConfig
 import net.impossibleworld.anticheat.data.PlayerData
 import org.bukkit.Bukkit
 
-class HitboxCheck(data: PlayerData) : Check(data,"HitBoxCheck"){
+class HitboxCheck(data: PlayerData) : Check(data,"HitBoxCheck") {
+
+    private val cfgLang : LanguageConfig = Main.instance.getWorkConfig()
+
+
     override fun handle(event: PacketReceiveEvent) {
         if(event.packetType != PacketType.Play.Client.INTERACT_ENTITY) return
 
@@ -33,7 +39,7 @@ class HitboxCheck(data: PlayerData) : Check(data,"HitBoxCheck"){
             val rayTrace = expandedBox.rayTrace(eyeLocation.toVector(),direction,10.0)
             if(rayTrace == null) {
                 if(increaseBuffer(1.0,0.1,7.0)) {
-                    fail("Пропущенный хитбокс с большим отрывом > $expansion")
+                    fail(cfgLang.getMessage("fails.hitbox").replace("%expansion%", expansion.toString()))
                 }
             } else {
                 decreaseBuffer(0.1)

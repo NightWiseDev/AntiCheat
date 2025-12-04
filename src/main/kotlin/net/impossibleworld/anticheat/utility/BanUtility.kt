@@ -1,5 +1,6 @@
 package net.impossibleworld.anticheat.utility
 
+import net.impossibleworld.anticheat.Main
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Particle
@@ -42,12 +43,18 @@ object BanUtility {
                     player.world.playSound(player.location, Sound.ENTITY_GENERIC_EXPLODE, 1f, 1f)
                     player.world.playSound(player.location, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1f, 1f)
 
-                    val command = "tempban ${player.name} 30d Запрещенное ПО ($reason) -s" // -s чтобы скрыть дефолтное сообщение, если хочешь
+                    val command = Main.instance.mainCfg.getMessage("settings.ban_command")
+                        .replace("%player%", player.name)
+                        .replace("%reason%", reason)
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command)
-
-                    Bukkit.broadcastMessage("§8[§c§lAC§8] §fИгрок §c${player.name} §fбыл уничтожен за читерские программы!")
+                    if (Main.instance.mainCfg.getConfig().getBoolean("settings.broadcast_ban")) {
+                        Bukkit.broadcastMessage(
+                            HexUtil.translate(
+                                Main.instance.getWorkConfig().getMessage("messages.broadcast_ban_message")
+                            )
+                        )
+                    }
                 }
-
                 ticks++
             }
         }.runTaskTimer(plugin, 0L, 1L) // Запускаем каждый тик

@@ -80,10 +80,5 @@
             <version>2.10.0</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>net.impossibleworld</groupId>
-            <artifactId>IW-API</artifactId>
-            <version>1.0.0</version>
-        </dependency>
     </dependencies>
 </project>
